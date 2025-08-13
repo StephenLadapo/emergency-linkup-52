@@ -10,154 +10,100 @@ export type Database = {
   // Allows to automatically instanciate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "12.2.12 (cd3cf9e)"
+    PostgrestVersion: "13.0.4"
   }
   public: {
     Tables: {
-      emergency_requests: {
+      audio_recordings: {
         Row: {
-          assigned_to: string | null
-          audio_transcription: string | null
-          audio_url: string | null
-          created_at: string
-          description: string | null
-          emergency_type: Database["public"]["Enums"]["emergency_type"]
+          classification: string | null
+          confidence: number | null
+          created_at: string | null
+          duration: number | null
+          file_name: string
+          file_url: string
           id: string
-          location_address: string | null
-          location_lat: number | null
-          location_lng: number | null
-          priority_level: number | null
-          resolved_at: string | null
-          status: Database["public"]["Enums"]["emergency_status"]
-          student_id: string
-          title: string
-          updated_at: string
+          user_id: string | null
         }
         Insert: {
-          assigned_to?: string | null
-          audio_transcription?: string | null
-          audio_url?: string | null
-          created_at?: string
-          description?: string | null
-          emergency_type: Database["public"]["Enums"]["emergency_type"]
+          classification?: string | null
+          confidence?: number | null
+          created_at?: string | null
+          duration?: number | null
+          file_name: string
+          file_url: string
           id?: string
-          location_address?: string | null
-          location_lat?: number | null
-          location_lng?: number | null
-          priority_level?: number | null
-          resolved_at?: string | null
-          status?: Database["public"]["Enums"]["emergency_status"]
-          student_id: string
-          title: string
-          updated_at?: string
+          user_id?: string | null
         }
         Update: {
-          assigned_to?: string | null
-          audio_transcription?: string | null
-          audio_url?: string | null
-          created_at?: string
-          description?: string | null
-          emergency_type?: Database["public"]["Enums"]["emergency_type"]
+          classification?: string | null
+          confidence?: number | null
+          created_at?: string | null
+          duration?: number | null
+          file_name?: string
+          file_url?: string
           id?: string
-          location_address?: string | null
-          location_lat?: number | null
-          location_lng?: number | null
-          priority_level?: number | null
-          resolved_at?: string | null
-          status?: Database["public"]["Enums"]["emergency_status"]
-          student_id?: string
-          title?: string
-          updated_at?: string
+          user_id?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "emergency_requests_assigned_to_fkey"
-            columns: ["assigned_to"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "emergency_requests_student_id_fkey"
-            columns: ["student_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
-      emergency_responses: {
+      emergency_reports: {
         Row: {
-          created_at: string
-          emergency_id: string
+          created_at: string | null
+          description: string | null
           id: string
-          message: string
-          responder_id: string
-          response_type: string | null
+          location: Json | null
+          status: string | null
+          type: string
+          updated_at: string | null
+          user_id: string | null
         }
         Insert: {
-          created_at?: string
-          emergency_id: string
+          created_at?: string | null
+          description?: string | null
           id?: string
-          message: string
-          responder_id: string
-          response_type?: string | null
+          location?: Json | null
+          status?: string | null
+          type: string
+          updated_at?: string | null
+          user_id?: string | null
         }
         Update: {
-          created_at?: string
-          emergency_id?: string
+          created_at?: string | null
+          description?: string | null
           id?: string
-          message?: string
-          responder_id?: string
-          response_type?: string | null
+          location?: Json | null
+          status?: string | null
+          type?: string
+          updated_at?: string | null
+          user_id?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "emergency_responses_emergency_id_fkey"
-            columns: ["emergency_id"]
-            isOneToOne: false
-            referencedRelation: "emergency_requests"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "emergency_responses_responder_id_fkey"
-            columns: ["responder_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       profiles: {
         Row: {
-          created_at: string
-          full_name: string
+          avatar_url: string | null
+          full_name: string | null
           id: string
-          phone: string | null
-          role: Database["public"]["Enums"]["app_role"]
-          student_id: string | null
-          updated_at: string
-          user_id: string
+          updated_at: string | null
+          username: string | null
+          website: string | null
         }
         Insert: {
-          created_at?: string
-          full_name: string
-          id?: string
-          phone?: string | null
-          role?: Database["public"]["Enums"]["app_role"]
-          student_id?: string | null
-          updated_at?: string
-          user_id: string
+          avatar_url?: string | null
+          full_name?: string | null
+          id: string
+          updated_at?: string | null
+          username?: string | null
+          website?: string | null
         }
         Update: {
-          created_at?: string
-          full_name?: string
+          avatar_url?: string | null
+          full_name?: string | null
           id?: string
-          phone?: string | null
-          role?: Database["public"]["Enums"]["app_role"]
-          student_id?: string | null
-          updated_at?: string
-          user_id?: string
+          updated_at?: string | null
+          username?: string | null
+          website?: string | null
         }
         Relationships: []
       }
@@ -166,29 +112,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      can_access_emergency_type: {
-        Args: {
-          user_uuid: string
-          req_type: Database["public"]["Enums"]["emergency_type"]
-        }
-        Returns: boolean
-      }
-      get_user_role: {
-        Args: { user_uuid: string }
-        Returns: Database["public"]["Enums"]["app_role"]
-      }
-      has_role: {
-        Args: {
-          user_uuid: string
-          required_role: Database["public"]["Enums"]["app_role"]
-        }
-        Returns: boolean
-      }
+      [_ in never]: never
     }
     Enums: {
-      app_role: "student" | "medical_staff" | "security_staff" | "admin"
-      emergency_status: "pending" | "in_progress" | "resolved" | "cancelled"
-      emergency_type: "medical" | "security" | "fire" | "both"
+      [_ in never]: never
     }
     CompositeTypes: {
       [_ in never]: never
@@ -315,10 +242,6 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {
-      app_role: ["student", "medical_staff", "security_staff", "admin"],
-      emergency_status: ["pending", "in_progress", "resolved", "cancelled"],
-      emergency_type: ["medical", "security", "fire", "both"],
-    },
+    Enums: {},
   },
 } as const
