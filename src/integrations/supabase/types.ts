@@ -47,6 +47,50 @@ export type Database = {
         }
         Relationships: []
       }
+      emergency_contacts: {
+        Row: {
+          created_at: string | null
+          email: string | null
+          id: string
+          is_primary: boolean | null
+          name: string
+          phone: string
+          relation: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          is_primary?: boolean | null
+          name: string
+          phone: string
+          relation: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          is_primary?: boolean | null
+          name?: string
+          phone?: string
+          relation?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "emergency_contacts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       emergency_requests: {
         Row: {
           created_at: string | null
@@ -95,6 +139,59 @@ export type Database = {
         }
         Relationships: []
       }
+      medical_info: {
+        Row: {
+          allergies: string | null
+          blood_type: string | null
+          conditions: string | null
+          created_at: string | null
+          doctor_contact: string | null
+          doctor_name: string | null
+          id: string
+          medical_aid_number: string | null
+          medical_aid_provider: string | null
+          medications: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          allergies?: string | null
+          blood_type?: string | null
+          conditions?: string | null
+          created_at?: string | null
+          doctor_contact?: string | null
+          doctor_name?: string | null
+          id?: string
+          medical_aid_number?: string | null
+          medical_aid_provider?: string | null
+          medications?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          allergies?: string | null
+          blood_type?: string | null
+          conditions?: string | null
+          created_at?: string | null
+          doctor_contact?: string | null
+          doctor_name?: string | null
+          id?: string
+          medical_aid_number?: string | null
+          medical_aid_provider?: string | null
+          medications?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "medical_info_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notifications: {
         Row: {
           created_at: string | null
@@ -138,40 +235,52 @@ export type Database = {
       }
       profiles: {
         Row: {
+          address: string | null
           avatar_url: string | null
           created_at: string | null
           department: string | null
+          faculty: string | null
           full_name: string
           id: string
           is_active: boolean | null
           phone_number: string | null
           role: Database["public"]["Enums"]["user_role"]
+          student_number: string | null
           updated_at: string | null
           username: string | null
+          year_of_study: string | null
         }
         Insert: {
+          address?: string | null
           avatar_url?: string | null
           created_at?: string | null
           department?: string | null
+          faculty?: string | null
           full_name: string
           id: string
           is_active?: boolean | null
           phone_number?: string | null
           role?: Database["public"]["Enums"]["user_role"]
+          student_number?: string | null
           updated_at?: string | null
           username?: string | null
+          year_of_study?: string | null
         }
         Update: {
+          address?: string | null
           avatar_url?: string | null
           created_at?: string | null
           department?: string | null
+          faculty?: string | null
           full_name?: string
           id?: string
           is_active?: boolean | null
           phone_number?: string | null
           role?: Database["public"]["Enums"]["user_role"]
+          student_number?: string | null
           updated_at?: string | null
           username?: string | null
+          year_of_study?: string | null
         }
         Relationships: []
       }
