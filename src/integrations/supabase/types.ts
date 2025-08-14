@@ -47,75 +47,211 @@ export type Database = {
         }
         Relationships: []
       }
-      emergency_reports: {
+      emergency_requests: {
         Row: {
           created_at: string | null
           description: string | null
           id: string
+          latitude: number | null
           location: Json | null
-          status: string | null
-          type: string
+          longitude: number | null
+          priority: number | null
+          resolved_at: string | null
+          status: Database["public"]["Enums"]["emergency_status"] | null
+          title: string
+          type: Database["public"]["Enums"]["emergency_type"]
           updated_at: string | null
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           created_at?: string | null
           description?: string | null
           id?: string
+          latitude?: number | null
           location?: Json | null
-          status?: string | null
-          type: string
+          longitude?: number | null
+          priority?: number | null
+          resolved_at?: string | null
+          status?: Database["public"]["Enums"]["emergency_status"] | null
+          title: string
+          type: Database["public"]["Enums"]["emergency_type"]
           updated_at?: string | null
-          user_id?: string | null
+          user_id: string
         }
         Update: {
           created_at?: string | null
           description?: string | null
           id?: string
+          latitude?: number | null
           location?: Json | null
-          status?: string | null
-          type?: string
+          longitude?: number | null
+          priority?: number | null
+          resolved_at?: string | null
+          status?: Database["public"]["Enums"]["emergency_status"] | null
+          title?: string
+          type?: Database["public"]["Enums"]["emergency_type"]
           updated_at?: string | null
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: []
+      }
+      notifications: {
+        Row: {
+          created_at: string | null
+          emergency_id: string | null
+          id: string
+          is_read: boolean | null
+          message: string
+          title: string
+          type: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          emergency_id?: string | null
+          id?: string
+          is_read?: boolean | null
+          message: string
+          title: string
+          type?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          emergency_id?: string | null
+          id?: string
+          is_read?: boolean | null
+          message?: string
+          title?: string
+          type?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_emergency_id_fkey"
+            columns: ["emergency_id"]
+            isOneToOne: false
+            referencedRelation: "emergency_requests"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
           avatar_url: string | null
-          full_name: string | null
+          created_at: string | null
+          department: string | null
+          full_name: string
           id: string
+          is_active: boolean | null
+          phone_number: string | null
+          role: Database["public"]["Enums"]["user_role"]
           updated_at: string | null
           username: string | null
-          website: string | null
         }
         Insert: {
           avatar_url?: string | null
-          full_name?: string | null
+          created_at?: string | null
+          department?: string | null
+          full_name: string
           id: string
+          is_active?: boolean | null
+          phone_number?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
           updated_at?: string | null
           username?: string | null
-          website?: string | null
         }
         Update: {
           avatar_url?: string | null
-          full_name?: string | null
+          created_at?: string | null
+          department?: string | null
+          full_name?: string
           id?: string
+          is_active?: boolean | null
+          phone_number?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
           updated_at?: string | null
           username?: string | null
-          website?: string | null
         }
         Relationships: []
+      }
+      staff_responses: {
+        Row: {
+          arrived_at: string | null
+          completed_at: string | null
+          created_at: string | null
+          emergency_id: string
+          estimated_arrival: string | null
+          id: string
+          message: string | null
+          response_type: string | null
+          staff_id: string
+          status: Database["public"]["Enums"]["response_status"] | null
+          updated_at: string | null
+        }
+        Insert: {
+          arrived_at?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          emergency_id: string
+          estimated_arrival?: string | null
+          id?: string
+          message?: string | null
+          response_type?: string | null
+          staff_id: string
+          status?: Database["public"]["Enums"]["response_status"] | null
+          updated_at?: string | null
+        }
+        Update: {
+          arrived_at?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          emergency_id?: string
+          estimated_arrival?: string | null
+          id?: string
+          message?: string | null
+          response_type?: string | null
+          staff_id?: string
+          status?: Database["public"]["Enums"]["response_status"] | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "staff_responses_emergency_id_fkey"
+            columns: ["emergency_id"]
+            isOneToOne: false
+            referencedRelation: "emergency_requests"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      can_access_emergency_type: {
+        Args: {
+          _user_id: string
+          _emergency_type: Database["public"]["Enums"]["emergency_type"]
+        }
+        Returns: boolean
+      }
+      get_user_role: {
+        Args: { _user_id: string }
+        Returns: Database["public"]["Enums"]["user_role"]
+      }
     }
     Enums: {
-      [_ in never]: never
+      emergency_status:
+        | "pending"
+        | "acknowledged"
+        | "in_progress"
+        | "resolved"
+        | "cancelled"
+      emergency_type: "medical" | "security" | "fire" | "general"
+      response_status: "dispatched" | "arrived" | "completed"
+      user_role: "student" | "medical_staff" | "security_staff" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -242,6 +378,17 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      emergency_status: [
+        "pending",
+        "acknowledged",
+        "in_progress",
+        "resolved",
+        "cancelled",
+      ],
+      emergency_type: ["medical", "security", "fire", "general"],
+      response_status: ["dispatched", "arrived", "completed"],
+      user_role: ["student", "medical_staff", "security_staff", "admin"],
+    },
   },
 } as const
