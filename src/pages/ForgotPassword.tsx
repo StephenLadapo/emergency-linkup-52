@@ -31,11 +31,22 @@ const ForgotPassword = () => {
     setLoading(true);
     
     try {
-      const { data, error } = await supabase.functions.invoke('send-reset-pin', {
-        body: { email }
+      const response = await fetch('https://lumbvunhyvyddkwaexhx.supabase.co/functions/v1/send-reset-pin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1bWJ2dW5oeXZ5ZGRrd2FleGh4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUwOTQ1MTcsImV4cCI6MjA3MDY3MDUxN30.aiNW7YenpUVgxMgTzJoZ4kDbUAUBePh4l1lRgkbMUuc',
+        },
+        body: JSON.stringify({ email })
       });
 
-      if (error) throw error;
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.error) throw new Error(data.error);
 
       setStep('pin');
       toast.success('Reset PIN sent to your email');
@@ -74,15 +85,26 @@ const ForgotPassword = () => {
     setLoading(true);
     
     try {
-      const { data, error } = await supabase.functions.invoke('verify-reset-pin', {
-        body: { 
+      const response = await fetch('https://lumbvunhyvyddkwaexhx.supabase.co/functions/v1/verify-reset-pin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1bWJ2dW5oeXZ5ZGRrd2FleGh4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUwOTQ1MTcsImV4cCI6MjA3MDY3MDUxN30.aiNW7YenpUVgxMgTzJoZ4kDbUAUBePh4l1lRgkbMUuc',
+        },
+        body: JSON.stringify({ 
           email, 
           pin, 
           newPassword 
-        }
+        })
       });
 
-      if (error) throw error;
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.error) throw new Error(data.error);
 
       toast.success('Password reset successfully! You can now login with your new password.');
       // Redirect to login after successful reset
