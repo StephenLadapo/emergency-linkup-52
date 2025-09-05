@@ -82,6 +82,21 @@ const UserProfile = () => {
 
         if (profileData) {
           setProfile(profileData);
+        } else {
+          // Create initial profile if it doesn't exist
+          const initialProfile = {
+            id: authUser.id,
+            full_name: authUser.user_metadata?.full_name || '',
+            username: authUser.user_metadata?.username || '',
+            student_number: authUser.user_metadata?.student_id || '',
+            phone_number: '',
+            address: '',
+            faculty: '',
+            year_of_study: '',
+            avatar_url: '',
+            department: ''
+          };
+          setProfile(initialProfile);
         }
 
         // Fetch medical info
@@ -140,15 +155,15 @@ const UserProfile = () => {
     try {
       const { error } = await supabase
         .from('profiles')
-        .update({
+        .upsert({
+          id: authUser.id,
           full_name: profile.full_name,
           student_number: profile.student_number,
           phone_number: profile.phone_number,
           address: profile.address,
           faculty: profile.faculty,
           year_of_study: profile.year_of_study
-        })
-        .eq('id', authUser.id);
+        });
 
       if (error) throw error;
 
