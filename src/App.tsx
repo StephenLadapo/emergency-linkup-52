@@ -22,6 +22,11 @@ import ProfilePage from "./pages/dashboard/ProfilePage";
 import MessagesPage from "./pages/dashboard/MessagesPage";
 import HistoryPage from "./pages/dashboard/HistoryPage";
 import SettingsPage from "./pages/dashboard/SettingsPage";
+import ContactsPage from "./pages/dashboard/ContactsPage";
+import SuppliesPage from "./pages/dashboard/SuppliesPage";
+import ReportsPage from "./pages/dashboard/ReportsPage";
+import BroadcastPage from "./pages/dashboard/BroadcastPage";
+import TrackingPage from "./pages/dashboard/TrackingPage";
 import EmergencyVoiceDemo from "./pages/EmergencyVoiceDemo";
 import EmotionDetectorDemo from "./pages/EmotionDetectorDemo";
 
@@ -61,6 +66,11 @@ const App = () => (
               <Route path="messages" element={<MessagesPage />} />
               <Route path="history" element={<HistoryPage />} />
               <Route path="settings" element={<SettingsPage />} />
+              <Route path="contacts" element={<ContactsPage />} />
+              <Route path="supplies" element={<SuppliesPage />} />
+              <Route path="reports" element={<ReportsPage />} />
+              <Route path="broadcast" element={<BroadcastPage />} />
+              <Route path="tracking" element={<TrackingPage />} />
             </Route>
             
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

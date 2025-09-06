@@ -47,6 +47,48 @@ export type Database = {
         }
         Relationships: []
       }
+      emergency_broadcasts: {
+        Row: {
+          broadcast_type: string
+          created_at: string
+          expires_at: string | null
+          id: string
+          is_active: boolean | null
+          message: string
+          priority: string
+          sender_id: string
+          target_audience: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          broadcast_type: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          message: string
+          priority: string
+          sender_id: string
+          target_audience?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          broadcast_type?: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          message?: string
+          priority?: string
+          sender_id?: string
+          target_audience?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       emergency_contacts: {
         Row: {
           created_at: string | null
@@ -135,6 +177,132 @@ export type Database = {
           title?: string
           type?: Database["public"]["Enums"]["emergency_type"]
           updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      emergency_supplies: {
+        Row: {
+          category: string
+          created_at: string
+          expiry_date: string | null
+          id: string
+          item_name: string
+          last_checked: string | null
+          location: string | null
+          notes: string | null
+          quantity: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          expiry_date?: string | null
+          id?: string
+          item_name: string
+          last_checked?: string | null
+          location?: string | null
+          notes?: string | null
+          quantity?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          expiry_date?: string | null
+          id?: string
+          item_name?: string
+          last_checked?: string | null
+          location?: string | null
+          notes?: string | null
+          quantity?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      geofence_zones: {
+        Row: {
+          coordinates: Json
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          radius: number | null
+          updated_at: string
+          zone_type: string
+        }
+        Insert: {
+          coordinates: Json
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          radius?: number | null
+          updated_at?: string
+          zone_type: string
+        }
+        Update: {
+          coordinates?: Json
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          radius?: number | null
+          updated_at?: string
+          zone_type?: string
+        }
+        Relationships: []
+      }
+      incident_reports: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          incident_type: string
+          latitude: number | null
+          location: string | null
+          longitude: number | null
+          severity: string
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          incident_type: string
+          latitude?: number | null
+          location?: string | null
+          longitude?: number | null
+          severity: string
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          incident_type?: string
+          latitude?: number | null
+          location?: string | null
+          longitude?: number | null
+          severity?: string
+          status?: string
+          title?: string
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
@@ -360,6 +528,47 @@ export type Database = {
             columns: ["emergency_id"]
             isOneToOne: false
             referencedRelation: "emergency_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_locations: {
+        Row: {
+          accuracy: number | null
+          created_at: string
+          id: string
+          latitude: number
+          longitude: number
+          user_id: string
+          zone_id: string | null
+          zone_status: string | null
+        }
+        Insert: {
+          accuracy?: number | null
+          created_at?: string
+          id?: string
+          latitude: number
+          longitude: number
+          user_id: string
+          zone_id?: string | null
+          zone_status?: string | null
+        }
+        Update: {
+          accuracy?: number | null
+          created_at?: string
+          id?: string
+          latitude?: number
+          longitude?: number
+          user_id?: string
+          zone_id?: string | null
+          zone_status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_locations_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "geofence_zones"
             referencedColumns: ["id"]
           },
         ]
