@@ -9,11 +9,6 @@ import {
   Settings,
   Brain,
   Smile,
-  Users,
-  Package,
-  AlertTriangle,
-  Radio,
-  Navigation,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import {
@@ -67,31 +62,6 @@ const menuItems = [
     title: "Settings",
     icon: Settings,
     path: "/dashboard/settings",
-  },
-  {
-    title: "Emergency Contacts",
-    icon: Users,
-    path: "/dashboard/contacts",
-  },
-  {
-    title: "Supply Inventory", 
-    icon: Package,
-    path: "/dashboard/supplies",
-  },
-  {
-    title: "Incident Reports",
-    icon: AlertTriangle,
-    path: "/dashboard/reports",
-  },
-  {
-    title: "Emergency Alerts",
-    icon: Radio,
-    path: "/dashboard/broadcast",
-  },
-  {
-    title: "Location Tracking",
-    icon: Navigation,
-    path: "/dashboard/tracking",
   },
   {
     title: "Emergency Voice AI",
