@@ -47,6 +47,132 @@ export type Database = {
         }
         Relationships: []
       }
+      campus_alerts: {
+        Row: {
+          alert_type: string
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          is_active: boolean | null
+          message: string
+          priority: string
+          sender_id: string | null
+          target_audience: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          alert_type?: string
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          message: string
+          priority?: string
+          sender_id?: string | null
+          target_audience?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          alert_type?: string
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          message?: string
+          priority?: string
+          sender_id?: string | null
+          target_audience?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      check_in_timers: {
+        Row: {
+          created_at: string | null
+          emergency_contacts: string[] | null
+          expected_check_in: string
+          id: string
+          last_check_in: string | null
+          location_data: Json | null
+          start_time: string | null
+          status: string | null
+          timer_duration: number
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          emergency_contacts?: string[] | null
+          expected_check_in: string
+          id?: string
+          last_check_in?: string | null
+          location_data?: Json | null
+          start_time?: string | null
+          status?: string | null
+          timer_duration: number
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          emergency_contacts?: string[] | null
+          expected_check_in?: string
+          id?: string
+          last_check_in?: string | null
+          location_data?: Json | null
+          start_time?: string | null
+          status?: string | null
+          timer_duration?: number
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      emergency_broadcasts: {
+        Row: {
+          broadcast_type: string
+          created_at: string
+          expires_at: string | null
+          id: string
+          is_active: boolean | null
+          message: string
+          priority: string
+          sender_id: string
+          target_audience: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          broadcast_type: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          message: string
+          priority: string
+          sender_id: string
+          target_audience?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          broadcast_type?: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          message?: string
+          priority?: string
+          sender_id?: string
+          target_audience?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       emergency_contacts: {
         Row: {
           created_at: string | null
@@ -101,6 +227,9 @@ export type Database = {
           longitude: number | null
           priority: number | null
           resolved_at: string | null
+          responder_eta: string | null
+          response_notes: string | null
+          response_status: string | null
           status: Database["public"]["Enums"]["emergency_status"] | null
           title: string
           type: Database["public"]["Enums"]["emergency_type"]
@@ -116,6 +245,9 @@ export type Database = {
           longitude?: number | null
           priority?: number | null
           resolved_at?: string | null
+          responder_eta?: string | null
+          response_notes?: string | null
+          response_status?: string | null
           status?: Database["public"]["Enums"]["emergency_status"] | null
           title: string
           type: Database["public"]["Enums"]["emergency_type"]
@@ -131,10 +263,189 @@ export type Database = {
           longitude?: number | null
           priority?: number | null
           resolved_at?: string | null
+          responder_eta?: string | null
+          response_notes?: string | null
+          response_status?: string | null
           status?: Database["public"]["Enums"]["emergency_status"] | null
           title?: string
           type?: Database["public"]["Enums"]["emergency_type"]
           updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      emergency_staff: {
+        Row: {
+          certification_level: string | null
+          contact_number: string | null
+          created_at: string
+          emergency_contact: string | null
+          id: string
+          is_available: boolean
+          specializations: string[] | null
+          staff_type: string
+          updated_at: string
+          user_id: string
+          years_experience: number | null
+        }
+        Insert: {
+          certification_level?: string | null
+          contact_number?: string | null
+          created_at?: string
+          emergency_contact?: string | null
+          id?: string
+          is_available?: boolean
+          specializations?: string[] | null
+          staff_type: string
+          updated_at?: string
+          user_id: string
+          years_experience?: number | null
+        }
+        Update: {
+          certification_level?: string | null
+          contact_number?: string | null
+          created_at?: string
+          emergency_contact?: string | null
+          id?: string
+          is_available?: boolean
+          specializations?: string[] | null
+          staff_type?: string
+          updated_at?: string
+          user_id?: string
+          years_experience?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "emergency_staff_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      emergency_supplies: {
+        Row: {
+          category: string
+          created_at: string
+          expiry_date: string | null
+          id: string
+          item_name: string
+          last_checked: string | null
+          location: string | null
+          notes: string | null
+          quantity: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          expiry_date?: string | null
+          id?: string
+          item_name: string
+          last_checked?: string | null
+          location?: string | null
+          notes?: string | null
+          quantity?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          expiry_date?: string | null
+          id?: string
+          item_name?: string
+          last_checked?: string | null
+          location?: string | null
+          notes?: string | null
+          quantity?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      geofence_zones: {
+        Row: {
+          coordinates: Json
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          radius: number | null
+          updated_at: string
+          zone_type: string
+        }
+        Insert: {
+          coordinates: Json
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          radius?: number | null
+          updated_at?: string
+          zone_type: string
+        }
+        Update: {
+          coordinates?: Json
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          radius?: number | null
+          updated_at?: string
+          zone_type?: string
+        }
+        Relationships: []
+      }
+      incident_reports: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          incident_type: string
+          latitude: number | null
+          location: string | null
+          longitude: number | null
+          severity: string
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          incident_type: string
+          latitude?: number | null
+          location?: string | null
+          longitude?: number | null
+          severity: string
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          incident_type?: string
+          latitude?: number | null
+          location?: string | null
+          longitude?: number | null
+          severity?: string
+          status?: string
+          title?: string
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
@@ -233,6 +544,33 @@ export type Database = {
           },
         ]
       }
+      offline_emergency_requests: {
+        Row: {
+          created_at: string | null
+          emergency_data: Json
+          id: string
+          sync_status: string | null
+          synced_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          emergency_data: Json
+          id?: string
+          sync_status?: string | null
+          synced_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          emergency_data?: Json
+          id?: string
+          sync_status?: string | null
+          synced_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       password_reset_codes: {
         Row: {
           code: string
@@ -314,6 +652,51 @@ export type Database = {
         }
         Relationships: []
       }
+      safe_zones: {
+        Row: {
+          capacity: number | null
+          contact_info: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          latitude: number
+          longitude: number
+          name: string
+          operating_hours: string | null
+          updated_at: string | null
+          zone_type: string
+        }
+        Insert: {
+          capacity?: number | null
+          contact_info?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          latitude: number
+          longitude: number
+          name: string
+          operating_hours?: string | null
+          updated_at?: string | null
+          zone_type: string
+        }
+        Update: {
+          capacity?: number | null
+          contact_info?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          latitude?: number
+          longitude?: number
+          name?: string
+          operating_hours?: string | null
+          updated_at?: string | null
+          zone_type?: string
+        }
+        Relationships: []
+      }
       staff_responses: {
         Row: {
           arrived_at: string | null
@@ -360,6 +743,47 @@ export type Database = {
             columns: ["emergency_id"]
             isOneToOne: false
             referencedRelation: "emergency_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_locations: {
+        Row: {
+          accuracy: number | null
+          created_at: string
+          id: string
+          latitude: number
+          longitude: number
+          user_id: string
+          zone_id: string | null
+          zone_status: string | null
+        }
+        Insert: {
+          accuracy?: number | null
+          created_at?: string
+          id?: string
+          latitude: number
+          longitude: number
+          user_id: string
+          zone_id?: string | null
+          zone_status?: string | null
+        }
+        Update: {
+          accuracy?: number | null
+          created_at?: string
+          id?: string
+          latitude?: number
+          longitude?: number
+          user_id?: string
+          zone_id?: string | null
+          zone_status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_locations_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "geofence_zones"
             referencedColumns: ["id"]
           },
         ]
