@@ -22,11 +22,6 @@ import ProfilePage from "./pages/dashboard/ProfilePage";
 import MessagesPage from "./pages/dashboard/MessagesPage";
 import HistoryPage from "./pages/dashboard/HistoryPage";
 import SettingsPage from "./pages/dashboard/SettingsPage";
-import StatusPage from "./pages/dashboard/StatusPage";
-import AlertsPage from "./pages/dashboard/AlertsPage";
-import OfflinePage from "./pages/dashboard/OfflinePage";
-import SafeZonesPage from "./pages/dashboard/SafeZonesPage";
-import CheckInPage from "./pages/dashboard/CheckInPage";
 import EmergencyVoiceDemo from "./pages/EmergencyVoiceDemo";
 import EmotionDetectorDemo from "./pages/EmotionDetectorDemo";
 
@@ -66,11 +61,6 @@ const App = () => (
               <Route path="messages" element={<MessagesPage />} />
               <Route path="history" element={<HistoryPage />} />
               <Route path="settings" element={<SettingsPage />} />
-              <Route path="status" element={<StatusPage />} />
-              <Route path="alerts" element={<AlertsPage />} />
-              <Route path="offline" element={<OfflinePage />} />
-              <Route path="safe-zones" element={<SafeZonesPage />} />
-              <Route path="check-in" element={<CheckInPage />} />
             </Route>
             
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
