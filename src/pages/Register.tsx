@@ -90,7 +90,7 @@ const Register = () => {
           emailRedirectTo: `${window.location.origin}/dashboard/profile`,
           data: {
             full_name: fullName,
-            student_number: studentNumber,
+            student_id: studentNumber,
           }
         }
       });
