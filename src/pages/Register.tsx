@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import Logo from '@/components/Logo';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Shield } from "lucide-react";
-
+import emailjs from '@emailjs/browser';
 import { supabase } from '@/integrations/supabase/client';
 
 // Password requirements
@@ -18,6 +18,9 @@ const PASSWORD_REQUIREMENTS = [
   { check: (p: string) => /[0-9]/.test(p), text: "At least one number" },
   { check: (p: string) => /[^A-Za-z0-9]/.test(p), text: "At least one special character" }
 ];
+
+// Initialize EmailJS with your user ID
+emailjs.init("ZVJqFtna5EaBhHwj4");
 
 const Register = () => {
   const [loading, setLoading] = useState(false);
@@ -36,6 +39,27 @@ const Register = () => {
     return true;
   };
 
+  const sendConfirmationEmail = async (email: string, fullName: string) => {
+    try {
+      const templateParams = {
+        to_name: fullName,
+        to_email: email,
+        login_link: `${window.location.origin}/login`
+      };
+
+      await emailjs.send(
+        "service_fprjlcl",
+        "template_gu18aiq",
+        templateParams
+      );
+
+      toast.success('Registration successful! A confirmation email has been sent.');
+    } catch (error) {
+      console.error('Failed to send confirmation email:', error);
+      // Don't fail the registration if email fails to send
+      toast.success('Registration successful!');
+    }
+  };
 
   const handleRegister = async (email: string, password: string, fullName?: string, studentNumber?: string, confirmPassword?: string) => {
     setLoading(true);
@@ -52,9 +76,8 @@ const Register = () => {
       return;
     }
     
-    // Remove Gmail restriction to allow all email addresses
-    if (!email.includes('@')) {
-      toast.error('Please enter a valid email address');
+    if (!email.endsWith('@gmail.com')) {
+      toast.error('Please use your Gmail email address (@gmail.com)');
       setLoading(false);
       return;
     }
@@ -77,8 +100,21 @@ const Register = () => {
       }
 
       if (data.user) {
-        // Simplified success message - let Supabase handle email confirmation
-        toast.success('Registration successful! You can now sign in.');
+        // Check if email confirmation is required
+        if (!data.user.email_confirmed_at && data.user.confirmation_sent_at) {
+          toast.success('Registration successful! Please check your email to verify your account before signing in.');
+        } else {
+          toast.success('Registration successful! You can now sign in.');
+        }
+        
+        // Send confirmation email via EmailJS
+        try {
+          await sendConfirmationEmail(email, fullName || '');
+        } catch (emailError) {
+          console.error('Failed to send confirmation email:', emailError);
+          // Don't fail registration if email fails to send
+        }
+        
         navigate('/login');
       }
     } catch (error: any) {
@@ -106,7 +142,7 @@ const Register = () => {
             <Logo className="mb-4" />
             <h1 className="text-3xl font-bold text-gradient-primary">Create an Account</h1>
             <p className="text-muted-foreground">
-              Sign up to access the Emergency System
+              Sign up to use the Emergency System
             </p>
           </div>
           
