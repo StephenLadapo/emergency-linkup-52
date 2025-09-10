@@ -54,16 +54,6 @@ const menuItems = [
     path: "/dashboard/assistant",
   },
   {
-    title: "Live Status",
-    icon: Activity,
-    path: "/dashboard/status",
-  },
-  {
-    title: "Campus Alerts",
-    icon: Megaphone,
-    path: "/dashboard/alerts",
-  },
-  {
     title: "Safe Zones",
     icon: Shield,
     path: "/dashboard/safe-zones",
@@ -72,11 +62,6 @@ const menuItems = [
     title: "Check-in Timer",
     icon: Clock,
     path: "/dashboard/check-in",
-  },
-  {
-    title: "Offline Mode",
-    icon: WifiOff,
-    path: "/dashboard/offline",
   },
   {
     title: "Messages",
