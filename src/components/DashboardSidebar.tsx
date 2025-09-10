@@ -9,6 +9,11 @@ import {
   Settings,
   Brain,
   Smile,
+  Activity,
+  Megaphone,
+  WifiOff,
+  Shield,
+  Clock,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import {
@@ -47,6 +52,16 @@ const menuItems = [
     title: "AI Assistant",
     icon: MessagesSquare,
     path: "/dashboard/assistant",
+  },
+  {
+    title: "Safe Zones",
+    icon: Shield,
+    path: "/dashboard/safe-zones",
+  },
+  {
+    title: "Check-in Timer",
+    icon: Clock,
+    path: "/dashboard/check-in",
   },
   {
     title: "Messages",
