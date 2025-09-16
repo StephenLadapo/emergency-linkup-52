@@ -33,7 +33,7 @@ const AuthForm = ({ mode, onSubmit, showConfirmPassword = false, passwordRequire
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.endsWith('@gmail.com')) {
-      toast.error('Please use your Gmail email (@gmail.com)');
+      toast.error('Please use your email (@gmail.com)');
       return;
     }
     
@@ -96,7 +96,7 @@ const AuthForm = ({ mode, onSubmit, showConfirmPassword = false, passwordRequire
       )}
       
       <div className="space-y-2">
-        <Label htmlFor="email" className="text-foreground">Gmail Email</Label>
+        <Label htmlFor="email" className="text-foreground">Email</Label>
         <Input 
           id="email"
           type="email" 
