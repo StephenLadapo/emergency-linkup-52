@@ -100,19 +100,16 @@ const Register = () => {
       }
 
       if (data.user) {
-        // Check if email confirmation is required
-        if (!data.user.email_confirmed_at && data.user.confirmation_sent_at) {
-          toast.success('Registration successful! Please check your email to verify your account before signing in.');
-        } else {
-          toast.success('Registration successful! You can now sign in.');
-        }
+        // Always show email verification message
+        toast.success('Registration successful! Please check your email to verify your account before signing in.', {
+          duration: 8000,
+        });
         
         // Send confirmation email via EmailJS
         try {
           await sendConfirmationEmail(email, fullName || '');
         } catch (emailError) {
           console.error('Failed to send confirmation email:', emailError);
-          // Don't fail registration if email fails to send
         }
         
         navigate('/login');
