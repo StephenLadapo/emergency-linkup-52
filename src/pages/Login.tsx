@@ -3,12 +3,18 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthForm from '@/components/AuthForm';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { toast } from 'sonner';
 import Logo from '@/components/Logo';
 import { supabase } from '@/integrations/supabase/client';
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
+  const [show2FA, setShow2FA] = useState(false);
+  const [twoFactorCode, setTwoFactorCode] = useState('');
+  const [pendingUserId, setPendingUserId] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const handleLogin = async (email: string, password: string) => {
@@ -27,9 +33,31 @@ const Login = () => {
       }
 
       if (data.user) {
-        console.log('Login successful for:', data.user.email);
-        toast.success('Login successful!');
-        navigate('/dashboard/profile');
+        // Check if user has 2FA enabled
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('two_factor_enabled')
+          .eq('id', data.user.id)
+          .single();
+
+        if ((profile as any)?.two_factor_enabled) {
+          // Send 2FA code
+          const { error: sendError } = await supabase.functions.invoke('send-2fa-code', {
+            body: { email: data.user.email, userId: data.user.id }
+          });
+
+          if (sendError) throw sendError;
+
+          // Sign out temporarily and show 2FA form
+          await supabase.auth.signOut();
+          setPendingUserId(data.user.id);
+          setShow2FA(true);
+          toast.success('Verification code sent to your email');
+        } else {
+          console.log('Login successful for:', data.user.email);
+          toast.success('Login successful!');
+          navigate('/dashboard/profile');
+        }
       }
     } catch (error: any) {
       console.error('Login error:', error);
@@ -40,6 +68,34 @@ const Login = () => {
       } else {
         toast.error(error.message || 'Login failed. Please check your credentials.');
       }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerify2FA = async () => {
+    if (twoFactorCode.length !== 6) {
+      toast.error('Please enter the complete 6-digit code');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { error } = await supabase.functions.invoke('verify-2fa-code', {
+        body: { userId: pendingUserId, code: twoFactorCode }
+      });
+
+      if (error) throw error;
+
+      // Re-authenticate the user
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        toast.success('Login successful!');
+        navigate('/dashboard/profile');
+      }
+    } catch (error: any) {
+      console.error('2FA verification error:', error);
+      toast.error('Invalid verification code');
     } finally {
       setLoading(false);
     }
@@ -60,13 +116,59 @@ const Login = () => {
         <div className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-md rounded-xl p-8 shadow-2xl border border-amber-200 dark:border-amber-900/30">
           <div className="flex flex-col items-center space-y-2 text-center mb-8">
             <Logo className="mb-4" />
-            <h1 className="text-3xl font-bold text-gradient-primary">Welcome Back</h1>
+            <h1 className="text-3xl font-bold text-gradient-primary">
+              {show2FA ? 'Enter Verification Code' : 'Welcome Back'}
+            </h1>
             <p className="text-muted-foreground">
-              Sign in to access the Emergency System
+              {show2FA ? 'Enter the 6-digit code sent to your email' : 'Sign in to access the Emergency System'}
             </p>
           </div>
           
-          <AuthForm mode="login" onSubmit={handleLogin} />
+          {show2FA ? (
+            <div className="space-y-6">
+              <div className="space-y-4">
+                <Label className="text-center block">Enter 6-Digit Code</Label>
+                <div className="flex justify-center">
+                  <InputOTP 
+                    maxLength={6} 
+                    value={twoFactorCode} 
+                    onChange={(value) => setTwoFactorCode(value)}
+                  >
+                    <InputOTPGroup>
+                      <InputOTPSlot index={0} />
+                      <InputOTPSlot index={1} />
+                      <InputOTPSlot index={2} />
+                      <InputOTPSlot index={3} />
+                      <InputOTPSlot index={4} />
+                      <InputOTPSlot index={5} />
+                    </InputOTPGroup>
+                  </InputOTP>
+                </div>
+              </div>
+              
+              <Button 
+                onClick={handleVerify2FA}
+                className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700" 
+                disabled={loading || twoFactorCode.length !== 6}
+              >
+                {loading ? 'Verifying...' : 'Verify Code'}
+              </Button>
+              
+              <Button 
+                variant="outline"
+                onClick={() => {
+                  setShow2FA(false);
+                  setTwoFactorCode('');
+                  setPendingUserId(null);
+                }}
+                className="w-full"
+              >
+                Back to Login
+              </Button>
+            </div>
+          ) : (
+            <AuthForm mode="login" onSubmit={handleLogin} />
+          )}
           
           <div className="mt-2 text-center">
             <Link to="/forgot-password" className="text-sm text-primary hover:underline">

@@ -5,10 +5,13 @@ import DashboardSidebar from "./DashboardSidebar";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import EmergencyButton from "./EmergencyButton";
+import ScreenshotProtection from "./ScreenshotProtection";
 import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useToast } from "./ui/use-toast";
+import { useSessionTimeout } from "@/hooks/useSessionTimeout";
+import { supabase } from "@/integrations/supabase/client";
 
 const DashboardLayout = () => {
   const [unusualSoundDetected, setUnusualSoundDetected] = useState(false);
@@ -18,6 +21,9 @@ const DashboardLayout = () => {
   const location = useLocation();
   const isMobile = useIsMobile();
   const { toast } = useToast();
+  
+  // Enable session timeout
+  useSessionTimeout();
   
   // Redirect to profile page if on the base dashboard path
   useEffect(() => {
@@ -68,8 +74,8 @@ const DashboardLayout = () => {
     setCountdownTime(160);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('user');
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
     toast({
       title: "Logged out successfully",
       description: "You have been logged out of your account",
@@ -82,10 +88,11 @@ const DashboardLayout = () => {
   };
 
   return (
-    <SidebarProvider defaultOpen={true}>
-      <div className="flex w-full min-h-screen">
-        <DashboardSidebar />
-        <SidebarInset className="py-6 px-8">
+    <ScreenshotProtection>
+      <SidebarProvider defaultOpen={true}>
+        <div className="flex w-full min-h-screen">
+          <DashboardSidebar />
+          <SidebarInset className="py-6 px-8">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center">
               <SidebarTrigger className="mr-2 lg:hidden" />
@@ -133,6 +140,7 @@ const DashboardLayout = () => {
         </SidebarInset>
       </div>
     </SidebarProvider>
+    </ScreenshotProtection>
   );
 };
 
