@@ -39,25 +39,22 @@ const Register = () => {
     return true;
   };
 
-  const sendConfirmationEmail = async (email: string, fullName: string) => {
+  const sendConfirmationEmail = async (email: string, fullName: string, confirmationUrl: string) => {
     try {
-      const templateParams = {
-        to_name: fullName,
-        to_email: email,
-        login_link: `${window.location.origin}/login`
-      };
+      const { error } = await supabase.functions.invoke('send-confirmation-email', {
+        body: {
+          email,
+          fullName,
+          confirmationUrl,
+        },
+      });
 
-      await emailjs.send(
-        "service_fprjlcl",
-        "template_gu18aiq",
-        templateParams
-      );
+      if (error) throw error;
 
-      toast.success('Registration successful! A confirmation email has been sent.');
+      console.log('Confirmation email sent successfully');
     } catch (error) {
       console.error('Failed to send confirmation email:', error);
       // Don't fail the registration if email fails to send
-      toast.success('Registration successful!');
     }
   };
 
@@ -100,6 +97,13 @@ const Register = () => {
       }
 
       if (data.user) {
+        // Get the confirmation URL from Supabase's response
+        // Since Supabase handles email confirmation, we'll send our custom email
+        const confirmationUrl = `${window.location.origin}/login`;
+        
+        // Send custom confirmation email
+        await sendConfirmationEmail(email, fullName || 'User', confirmationUrl);
+        
         toast.success('Registration successful! Please check your email to verify your account before signing in.');
         navigate('/login');
       }
