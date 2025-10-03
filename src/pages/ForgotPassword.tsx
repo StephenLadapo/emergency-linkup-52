@@ -18,26 +18,12 @@ const ForgotPassword = () => {
     setLoading(true);
     
     try {
-      // First, request password reset from Supabase to generate the tokens
-      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/reset-password`,
       });
 
-      if (resetError) {
-        console.error('Supabase reset error:', resetError);
-      }
-
-      // Send custom email via our edge function
-      const { error: emailError } = await supabase.functions.invoke('send-password-reset', {
-        body: {
-          email,
-          resetUrl: `${window.location.origin}/reset-password?email=${encodeURIComponent(email)}`,
-        },
-      });
-
-      if (emailError) {
-        console.error('Email sending error:', emailError);
-        throw new Error('Failed to send reset email. Please try again.');
+      if (error) {
+        throw error;
       }
 
       setEmailSent(true);

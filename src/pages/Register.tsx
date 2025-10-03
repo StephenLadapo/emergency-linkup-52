@@ -39,24 +39,6 @@ const Register = () => {
     return true;
   };
 
-  const sendConfirmationEmail = async (email: string, fullName: string, confirmationUrl: string) => {
-    try {
-      const { error } = await supabase.functions.invoke('send-confirmation-email', {
-        body: {
-          email,
-          fullName,
-          confirmationUrl,
-        },
-      });
-
-      if (error) throw error;
-
-      console.log('Confirmation email sent successfully');
-    } catch (error) {
-      console.error('Failed to send confirmation email:', error);
-      // Don't fail the registration if email fails to send
-    }
-  };
 
   const handleRegister = async (email: string, password: string, fullName?: string, studentNumber?: string, confirmPassword?: string) => {
     setLoading(true);
@@ -97,13 +79,6 @@ const Register = () => {
       }
 
       if (data.user) {
-        // Get the confirmation URL from Supabase's response
-        // Since Supabase handles email confirmation, we'll send our custom email
-        const confirmationUrl = `${window.location.origin}/login`;
-        
-        // Send custom confirmation email
-        await sendConfirmationEmail(email, fullName || 'User', confirmationUrl);
-        
         toast.success('Registration successful! Please check your email to verify your account before signing in.');
         navigate('/login');
       }
