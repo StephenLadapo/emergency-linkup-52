@@ -79,7 +79,22 @@ const Register = () => {
       }
 
       if (data.user) {
-        toast.success('Registration successful! Please check your email to verify your account before signing in.');
+        // Send confirmation email via edge function
+        const { error: emailError } = await supabase.functions.invoke('send-confirmation-email', {
+          body: {
+            email,
+            fullName: fullName || 'User',
+            confirmationUrl: `${window.location.origin}/login`,
+          },
+        });
+
+        if (emailError) {
+          console.error('Email sending error:', emailError);
+          toast.warning('Account created but confirmation email failed to send. Please contact support.');
+        } else {
+          toast.success('Registration successful! Please check your email to verify your account before signing in.');
+        }
+        
         navigate('/login');
       }
     } catch (error: any) {
