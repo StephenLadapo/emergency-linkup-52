@@ -84,7 +84,6 @@ const Register = () => {
           body: {
             email,
             fullName: fullName || 'User',
-            confirmationUrl: `${window.location.origin}/login`,
           },
         });
 

@@ -1,7 +1,13 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.55.0";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+
+const supabaseAdmin = createClient(
+  Deno.env.get("SUPABASE_URL") ?? "",
+  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+);
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -11,7 +17,6 @@ const corsHeaders = {
 interface ConfirmationEmailRequest {
   email: string;
   fullName: string;
-  confirmationUrl: string;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -20,8 +25,22 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { email, fullName, confirmationUrl }: ConfirmationEmailRequest = await req.json();
+    const { email, fullName }: ConfirmationEmailRequest = await req.json();
 
+    console.log("Generating confirmation link for:", email);
+
+    // Generate email verification link using Supabase Admin
+    const { data, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
+      type: 'signup',
+      email: email,
+    });
+
+    if (linkError || !data.properties?.action_link) {
+      console.error("Error generating confirmation link:", linkError);
+      throw new Error("Failed to generate confirmation link");
+    }
+
+    const confirmationUrl = data.properties.action_link;
     console.log("Sending confirmation email to:", email);
 
     const emailResponse = await resend.emails.send({

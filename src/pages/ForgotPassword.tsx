@@ -22,7 +22,6 @@ const ForgotPassword = () => {
       const { error } = await supabase.functions.invoke('send-password-reset', {
         body: {
           email,
-          resetUrl: `${window.location.origin}/reset-password`,
         },
       });
 
