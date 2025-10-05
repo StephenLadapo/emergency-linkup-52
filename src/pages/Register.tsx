@@ -6,7 +6,6 @@ import { toast } from 'sonner';
 import Logo from '@/components/Logo';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Shield } from "lucide-react";
-import emailjs from '@emailjs/browser';
 import { supabase } from '@/integrations/supabase/client';
 
 // Password requirements
@@ -18,9 +17,6 @@ const PASSWORD_REQUIREMENTS = [
   { check: (p: string) => /[0-9]/.test(p), text: "At least one number" },
   { check: (p: string) => /[^A-Za-z0-9]/.test(p), text: "At least one special character" }
 ];
-
-// Initialize EmailJS with your user ID
-emailjs.init("ZVJqFtna5EaBhHwj4");
 
 const Register = () => {
   const [loading, setLoading] = useState(false);
@@ -79,21 +75,7 @@ const Register = () => {
       }
 
       if (data.user) {
-        // Send confirmation email via edge function
-        const { error: emailError } = await supabase.functions.invoke('send-confirmation-email', {
-          body: {
-            email,
-            fullName: fullName || 'User',
-          },
-        });
-
-        if (emailError) {
-          console.error('Email sending error:', emailError);
-          toast.warning('Account created but confirmation email failed to send. Please contact support.');
-        } else {
-          toast.success('Registration successful! Please check your email to verify your account before signing in.');
-        }
-        
+        toast.success('Registration successful! Please check your email to verify your account before signing in.');
         navigate('/login');
       }
     } catch (error: any) {
