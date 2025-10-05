@@ -44,7 +44,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Sending confirmation email to:", email);
 
     const emailResponse = await resend.emails.send({
-      from: "UL Emergency System <noreply@yourdomain.com>", // TODO: Replace with your verified domain
+      from: "UL Emergency System <onboarding@resend.dev>",
       to: [email],
       subject: "Confirm Your Email - UL Emergency System",
       html: `

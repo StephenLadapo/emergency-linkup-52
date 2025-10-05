@@ -43,7 +43,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Sending password reset email to:", email);
 
     const emailResponse = await resend.emails.send({
-      from: "UL Emergency System <noreply@yourdomain.com>", // TODO: Replace with your verified domain
+      from: "UL Emergency System <onboarding@resend.dev>",
       to: [email],
       subject: "Reset Your Password - UL Emergency System",
       html: `
