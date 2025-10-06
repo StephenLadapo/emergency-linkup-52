@@ -35,6 +35,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         // Handle email confirmation
         if (event === 'SIGNED_IN' && session?.user) {
           console.log('User signed in:', session.user.email);
+          // Clear PIN verification flag on login to force PIN verification
+          sessionStorage.removeItem('pin_verified');
         }
         
         setLoading(false);
@@ -53,6 +55,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const signOut = async () => {
+    // Clear PIN verification flag
+    sessionStorage.removeItem('pin_verified');
+    
     const { error } = await supabase.auth.signOut();
     if (error) {
       console.error('Error signing out:', error);
