@@ -17,6 +17,8 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   useEffect(() => {
     const checkPinStatus = async () => {
       if (!user) {
+        // Clear PIN verification when user logs out
+        sessionStorage.removeItem('pin_verified');
         setPinStatus('loading');
         return;
       }
@@ -46,6 +48,8 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     };
 
     if (user && !loading) {
+      checkPinStatus();
+    } else if (!user) {
       checkPinStatus();
     }
   }, [user, loading]);
