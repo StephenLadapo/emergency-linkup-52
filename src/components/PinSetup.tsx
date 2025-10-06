@@ -41,7 +41,7 @@ const PinSetup = ({ onComplete }: PinSetupProps) => {
         if (error) throw error;
 
         toast.success('PIN set up successfully!');
-        sessionStorage.setItem('pin_verified', 'true');
+        localStorage.setItem('pin_verified', 'true');
         onComplete();
       } catch (error: any) {
         console.error('PIN setup error:', error);

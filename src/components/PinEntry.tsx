@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
@@ -15,8 +17,16 @@ const PinEntry = ({ onSuccess, onLogout }: PinEntryProps) => {
   const [pin, setPin] = useState('');
   const [loading, setLoading] = useState(false);
   const [attempts, setAttempts] = useState(0);
+  const navigate = useNavigate();
 
-  const handlePinComplete = async () => {
+  const handleVerifyPin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (pin.length !== 4) {
+      toast.error('PIN must be 4 digits');
+      return;
+    }
+
     if (attempts >= 3) {
       toast.error('Too many failed attempts. Please log in again.');
       await onLogout();
@@ -38,16 +48,16 @@ const PinEntry = ({ onSuccess, onLogout }: PinEntryProps) => {
       }
 
       if (data?.success) {
-        sessionStorage.setItem('pin_verified', 'true');
+        localStorage.setItem('pin_verified', 'true');
         toast.success('PIN verified successfully!');
-        onSuccess();
+        navigate('/');
       } else {
         setAttempts(prev => prev + 1);
         throw new Error('Invalid PIN');
       }
     } catch (error: any) {
       console.error('PIN verification error:', error);
-      toast.error(`Incorrect PIN. ${3 - attempts - 1} attempts remaining.`);
+      toast.error('Incorrect PIN');
       setPin('');
     } finally {
       setLoading(false);
@@ -63,37 +73,46 @@ const PinEntry = ({ onSuccess, onLogout }: PinEntryProps) => {
               <Lock className="h-6 w-6 text-primary" />
             </div>
           </div>
-          <CardTitle className="text-2xl">Enter Your PIN</CardTitle>
+          <CardTitle className="text-2xl">Enter PIN</CardTitle>
           <CardDescription>
-            Please enter your 4-digit PIN to continue
+            Enter your 4-digit PIN to access the app
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="flex justify-center">
-            <InputOTP
-              maxLength={4}
-              value={pin}
-              onChange={setPin}
-              onComplete={handlePinComplete}
+        <CardContent>
+          <form onSubmit={handleVerifyPin} className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="pin">PIN (4 digits)</Label>
+              <Input
+                id="pin"
+                type="password"
+                inputMode="numeric"
+                maxLength={4}
+                value={pin}
+                onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))}
+                disabled={loading}
+                placeholder="Enter PIN"
+                autoFocus
+              />
+            </div>
+
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={loading || pin.length !== 4}
+            >
+              {loading ? 'Verifying...' : 'Verify PIN'}
+            </Button>
+
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              onClick={onLogout}
               disabled={loading}
             >
-              <InputOTPGroup>
-                <InputOTPSlot index={0} />
-                <InputOTPSlot index={1} />
-                <InputOTPSlot index={2} />
-                <InputOTPSlot index={3} />
-              </InputOTPGroup>
-            </InputOTP>
-          </div>
-
-          <Button
-            variant="outline"
-            className="w-full"
-            onClick={onLogout}
-            disabled={loading}
-          >
-            Logout
-          </Button>
+              Logout
+            </Button>
+          </form>
         </CardContent>
       </Card>
     </div>
