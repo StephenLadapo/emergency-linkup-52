@@ -276,53 +276,45 @@ export type Database = {
       }
       emergency_staff: {
         Row: {
-          certification_level: string | null
           contact_number: string | null
           created_at: string
+          email: string
           emergency_contact: string | null
           id: string
           is_available: boolean
+          password: string | null
           specializations: string[] | null
-          staff_type: string
+          staff_type: string | null
           updated_at: string
           user_id: string
-          years_experience: number | null
         }
         Insert: {
-          certification_level?: string | null
           contact_number?: string | null
           created_at?: string
+          email: string
           emergency_contact?: string | null
-          id?: string
+          id: string
           is_available?: boolean
+          password?: string | null
           specializations?: string[] | null
-          staff_type: string
+          staff_type?: string | null
           updated_at?: string
           user_id: string
-          years_experience?: number | null
         }
         Update: {
-          certification_level?: string | null
           contact_number?: string | null
           created_at?: string
+          email?: string
           emergency_contact?: string | null
           id?: string
           is_available?: boolean
+          password?: string | null
           specializations?: string[] | null
-          staff_type?: string
+          staff_type?: string | null
           updated_at?: string
           user_id?: string
-          years_experience?: number | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "emergency_staff_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: true
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       emergency_supplies: {
         Row: {
@@ -612,8 +604,12 @@ export type Database = {
           id: string
           is_active: boolean | null
           phone_number: string | null
+          pin_code: string | null
+          pin_salt: string | null
+          pin_setup_at: string | null
           role: Database["public"]["Enums"]["user_role"]
           student_number: string | null
+          two_factor_enabled: boolean | null
           updated_at: string | null
           username: string | null
           year_of_study: string | null
@@ -628,8 +624,12 @@ export type Database = {
           id: string
           is_active?: boolean | null
           phone_number?: string | null
+          pin_code?: string | null
+          pin_salt?: string | null
+          pin_setup_at?: string | null
           role?: Database["public"]["Enums"]["user_role"]
           student_number?: string | null
+          two_factor_enabled?: boolean | null
           updated_at?: string | null
           username?: string | null
           year_of_study?: string | null
@@ -644,8 +644,12 @@ export type Database = {
           id?: string
           is_active?: boolean | null
           phone_number?: string | null
+          pin_code?: string | null
+          pin_salt?: string | null
+          pin_setup_at?: string | null
           role?: Database["public"]["Enums"]["user_role"]
           student_number?: string | null
+          two_factor_enabled?: boolean | null
           updated_at?: string | null
           username?: string | null
           year_of_study?: string | null
@@ -747,6 +751,33 @@ export type Database = {
           },
         ]
       }
+      two_factor_codes: {
+        Row: {
+          code: string
+          created_at: string | null
+          expires_at: string
+          id: string
+          used: boolean | null
+          user_id: string
+        }
+        Insert: {
+          code: string
+          created_at?: string | null
+          expires_at: string
+          id?: string
+          used?: boolean | null
+          user_id: string
+        }
+        Update: {
+          code?: string
+          created_at?: string | null
+          expires_at?: string
+          id?: string
+          used?: boolean | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_locations: {
         Row: {
           accuracy: number | null
@@ -799,6 +830,16 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      get_available_staff_emails: {
+        Args: {
+          emergency_type_param: Database["public"]["Enums"]["emergency_type"]
+        }
+        Returns: {
+          email: string
+          specializations: string[]
+          staff_type: string
+        }[]
       }
       get_user_role: {
         Args: { _user_id: string }
