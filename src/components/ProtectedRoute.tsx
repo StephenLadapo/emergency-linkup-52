@@ -21,7 +21,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
         return;
       }
 
-      const pinVerified = localStorage.getItem('pin_verified');
+      const pinVerified = sessionStorage.getItem('pin_verified');
       if (pinVerified === 'true') {
         setPinStatus('verified');
         return;
@@ -51,7 +51,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   }, [user, loading]);
 
   const handleLogout = async () => {
-    localStorage.removeItem('pin_verified');
+    sessionStorage.removeItem('pin_verified');
     await signOut();
   };
 
